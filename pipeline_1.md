@@ -26,7 +26,7 @@ seqtk subseq final_contigs.fasta final_contigs_size_more_200.fasta > archivo.fas
 
 ```
 
-#### ORfs prediction
+#### ORFs prediction
 ```
 MetaGeneMark_linux_64/mgm/gmhmmp -a -d -f G -m mgm/MetaGeneMark_v1.mod -o ./CGB113-1_meta_gen_mark_lst /home/mario/Documentos/final_contigs_size_more_200.fasta -A prot_seq_CGB113-1.gff -D nucl_seq_CGB113-1.gff
 ```
