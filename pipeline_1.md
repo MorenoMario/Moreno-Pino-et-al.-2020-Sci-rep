@@ -21,8 +21,8 @@ SPAdes-3.6.1-Linux/bin/spades.py --careful --only-assembler --s1 ../CGB113-1_nor
 #### Keep contigs >200pb
 
 ```
-fastalength -f final_contigs.fasta | awk '$1>199{print$2}'  > final_contigs_more_200
-seqtk subseq final_contigs.fasta final_contigs_size_more_200.fasta > archivo.fasta
+cat final_contigs.fasta |awk '$0 ~ ">" {if (NR > 1) {print c;} c=0;printf substr($0,2,100) "\t"; } $0 !~ ">" {c+=length($0);} END { print c; }' 
+seqtk subseq final_contigs.fasta final_contigs_size_more_200.fasta > file_more200.fasta
 
 ```
 
