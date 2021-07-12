@@ -14,30 +14,12 @@ hmmsearch --tblout ./CGB113-1_hmm_pfam -E 1e-5 --cpu 12 media/storage1/data_base
 #### Mapping reads against contigs to obtain abundance of seq. using Bowtie2
 
 ```
-bowtie2 -f -x CGB113-2_final_contigs.fasta -1 CGB113-1_nonrRNA_30_R1.fasta -2 CGB113-2_nonrRNA_30_R2.fasta -S CGB113-2.sam
-awk '!/^@/ && $3!="*" {x="\t"; print $3 x $4 x length($10)+$4 x $1}' CGB113-2.sam  | sortBed -i - >CGB113-2.bed
-fastalength ../../nucl_seq_rename_CGB113-2.fasta | awk '{print $2"\t"$1}' > contig_length.tab
+bowtie2 --local --very-sensitive-local -q -x /media/storage1/metagenoma_CGB113/mario_sponge/cutadapt_seq_good_pandaseq/only_assammble_analysis/fan_moreno/spades_correcto_diciembre/CGB113-2/ORF/bowtie/end-to-end/nucl_seq_rename_CGB113-2.fasta -1 /media/storage1/metagenoma_CGB113/mario_sponge/cutadapt_seq_good_pandaseq/only_assammble_analysis/fan_moreno/sortmerna_correcto_diciembre/CGB113-2_R1_norRNA.fastq -2 /media/storage1/metagenoma_CGB113/mario_sponge/cutadapt_seq_good_pandaseq/only_assammble_analysis/fan_moreno/sortmerna_correcto_diciembre/CGB113-2_R2_norRNA.fastq -S CGB113-2.sam -p 12
 
-bedtools genomecov -i CGB113-2.bed -g contig_length.tab | cut -f1,2 | perl max.perl - >cov_max_CGB113-2.tab
-
-#script para obtener la cov mas larga por ORF
-%max = ();
-while(<>) {
-        chomp $_;
-        my ($gene,$cov) = split("\t",$_);
-        if(!$max{$gene}) {
-                $max{$gene} = $cov;
-        }
-        if($max{$gene} < $cov) {
-                $max{$gene} = $cov;
-        }
-}
-foreach my $gene (keys %max) {
-        print "$gene\t$max{$gene}\n";
-}
-
-cut -f2 -d "_" cov_max_CGB113-2.tab | sort -n -k1 | awk '{print "gene_"$0}' >cov_max_CGB113-2_sorted.tab
-
-awk '{sum+=$2} END {print sum}'  cov_max_CGB113-1_sorted.tab | less
+samtools view -bS CGB113-1.sam > CGB113-1.bam
+samtools view -hf 0x2 CGB113-1.bam | grep -v "XS:i:" | ./foo.py > CGB113-1.filtered.alignments.sam
+awk '!/^@/ && $3!="*" {x="\t"; print $3 x $4 x length($10)+$4 x $1}' CGB113-1.filtered.alignments.sam | sortBed -i - >CGB113-1.filtered.alignments.bed
+cut -f1,4 CGB113-1.filtered.alignments.bed | sort -u | cut -f1 | sort | uniq -c | awk '{print $2"\t"$1}' >CGB113-1.filtered.alignments.tab
+./merge_list CGB113-2.filtered.alignments.tab orf_length.tab > CGB113-2.filtered.alignments_orf_length.tab
 
 ```
