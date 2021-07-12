@@ -23,6 +23,10 @@ nohup ../sortmerna --ref /media/MD3200_VD1/Software/sortmerna-2.0-linux-64/rRNA_
 SPAdes-3.6.1-Linux/bin/spades.py --careful --only-assembler --s1 ../CGB113-1_norRNA.fastq -o ./CGB113-1_nonrRNA_spades -t 12 -m 200 &
 
 ```
+#### evaluate quality of assemblies using [quast](https://github.com/ablab/quast)
+```
+nohup python /media/MD3200_VD1/Software/quast-3.2/metaquast.py K21/k21_final_contigs.fasta K33/k33_final_contigs.fasta K55/k55_final_contigs.fasta K77/k77_final_contigs.fasta --threads 25 &
+```
 #### Keep contigs >200pb
 
 ```
